@@ -1,5 +1,5 @@
-using System.Net.Sockets;
 using Layer4Balancer.Interfaces;
+using Layer4Balancer.Wrappers;
 using Serilog;
 
 namespace Layer4Balancer.Services;
@@ -13,10 +13,10 @@ public class SocketHandler : ISocketHandler
         _logger = Log.ForContext<LoadBalancerService>();
     }
 
-    public async  Task HandleConnection(TcpClient client, Backend backend, CancellationToken cancellationToken)
+    public async  Task HandleConnection(ITcpClientWrapper client, Func<ITcpClientWrapper> tcpClientFactory, Backend backend, CancellationToken cancellationToken)
     {
         _logger.Information("Handling new connection from {RemoteIpAddressAndPort}", client.Client.RemoteEndPoint?.ToString());
-        using var serverSocket = new TcpClient();
+        using var serverSocket = tcpClientFactory.Invoke();
 
         try
         {
