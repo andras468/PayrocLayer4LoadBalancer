@@ -35,7 +35,7 @@ public class BackendRepository : IBackendRepository
             }
 
             var minimumConnections = backendsWithMinimumConnections.Min(backend => backend.ActiveConnectionCount);
-            return _backends.FirstOrDefault(backend => backend.ActiveConnectionCount == minimumConnections);
+            return backendsWithMinimumConnections.FirstOrDefault(backend => backend.ActiveConnectionCount == minimumConnections);
         }
     }
 
