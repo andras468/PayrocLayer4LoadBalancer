@@ -24,9 +24,9 @@ public class TcpClientWrapper : ITcpClientWrapper
         _client = new TcpClient(hostname, port);
     }
     
-    public ValueTask ConnectAsync(IPAddress address, int port, CancellationToken cancellationToken = default)
+    public Task ConnectAsync(IPAddress address, int port, CancellationToken cancellationToken = default)
     {
-        return _client.ConnectAsync(address, port, cancellationToken);
+        return _client.ConnectAsync(address, port, cancellationToken).AsTask();
     }
 
     public void Close()

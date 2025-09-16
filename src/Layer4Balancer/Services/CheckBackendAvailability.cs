@@ -1,4 +1,3 @@
-using System.Net.Sockets;
 using Layer4Balancer.Interfaces;
 using Layer4Balancer.Wrappers;
 using Serilog;
@@ -37,11 +36,11 @@ public class CheckBackendAvailability : ICheckBackendAvailability
                 try
                 {
                     using var client = _tcpClientFactory.Invoke();
-                    var connectTask = client.ConnectAsync(backend.IpAddress, backend.Port, cancellationToken).AsTask();
+                    var connectTask = client.ConnectAsync(backend.IpAddress, backend.Port, cancellationToken);
                     var timeoutTask = Task.Delay(_connectionTimeout, cancellationToken);
                     
-                    var finishedTask = await Task.WhenAny(connectTask, timeoutTask);
-                    if (finishedTask == timeoutTask || connectTask.IsFaulted)
+                    await Task.WhenAny(connectTask, timeoutTask);
+                    if (!connectTask.IsCompletedSuccessfully)
                     {
                         _logger.Information("Backend is offline {IpAddress}:{Port}", backend.IpAddress, backend.Port);
                         backend.SetAvailable(false);

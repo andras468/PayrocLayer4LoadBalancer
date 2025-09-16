@@ -66,7 +66,7 @@ public class SocketHandlerTests
         
         _backendTcpClientMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         
         _clientTcpClientMock
             .GetStream()
@@ -94,7 +94,7 @@ public class SocketHandlerTests
         
         _backendTcpClientMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         
         // Act
         await _sut.HandleConnection(_clientTcpClientMock, backend, CancellationToken.None);
@@ -117,7 +117,7 @@ public class SocketHandlerTests
         
         _backendTcpClientMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         
         // Act
         await _sut.HandleConnection(_clientTcpClientMock, backend, CancellationToken.None);
@@ -134,7 +134,7 @@ public class SocketHandlerTests
         
         _backendTcpClientMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         
         const string clientTestData = "ClientTestData";
         var clientStream = new MemoryStream(Encoding.UTF8.GetBytes(clientTestData));
@@ -162,7 +162,7 @@ public class SocketHandlerTests
         
         _backendTcpClientMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         var clientStream = new MemoryStream();
         _clientTcpClientMock
             .GetStream()

@@ -7,7 +7,7 @@ public interface ITcpClientWrapper : IDisposable
 {
     Socket Client { get; }
     
-    ValueTask ConnectAsync(IPAddress address, int port, CancellationToken cancellationToken = default);    
+    Task ConnectAsync(IPAddress address, int port, CancellationToken cancellationToken = default);    
     
     void Close();
     

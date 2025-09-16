@@ -41,7 +41,7 @@ public class CheckBackendAvailabilityTests
 
         _tcpClientWrapperMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         
         // Act
         _ = _sut.StartCheckAsync(cts.Token);
@@ -76,7 +76,7 @@ public class CheckBackendAvailabilityTests
 
         _tcpClientWrapperMock
             .ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
-            .Returns(ValueTask.CompletedTask);
+            .Returns(Task.CompletedTask);
         
         // Act
         _ = _sut.StartCheckAsync(cts.Token);
