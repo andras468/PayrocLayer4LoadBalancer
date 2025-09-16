@@ -4,7 +4,7 @@ using Serilog;
 
 namespace Layer4Balancer.Services;
 
-public class LoadBalancerService : ILoadBalancerService
+public class LoadBalancer : ILoadBalancerService
 {
     private readonly ITcpListenerWrapper _listener;
     private readonly IBackendRepository _backendRepository;
@@ -12,13 +12,13 @@ public class LoadBalancerService : ILoadBalancerService
     private readonly ICheckBackendAvailability _checkBackendAvailability;
     private readonly ILogger _logger;
     
-    public LoadBalancerService(
+    public LoadBalancer(
         ITcpListenerWrapper listener,
         IBackendRepository backendRepository,
         ISocketHandler handler,
         ICheckBackendAvailability checkBackendAvailability)
     {
-        _logger = Log.ForContext<LoadBalancerService>();
+        _logger = Log.ForContext<LoadBalancer>();
         
         _backendRepository = backendRepository;
         _handler = handler;

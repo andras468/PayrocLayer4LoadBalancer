@@ -12,7 +12,7 @@ public class SocketHandler : ISocketHandler
     public SocketHandler(Func<ITcpClientWrapper> tcpClientWrapperFactory)
     {
         _backendTcpClientWrapperFactory = tcpClientWrapperFactory;
-        _logger = Log.ForContext<LoadBalancerService>();
+        _logger = Log.ForContext<LoadBalancer>();
     }
 
     public async Task HandleConnection(ITcpClientWrapper client, Backend backend, CancellationToken cancellationToken)

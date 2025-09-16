@@ -30,7 +30,7 @@ backendRepository.Add(IPAddress.Loopback, 7002);
 var socketHandler = new SocketHandler(tcpClientWrapperFactory);
 var checkAvailability = new CheckBackendAvailability(tcpClientWrapperFactory, backendRepository);
 
-var loadBalancerService = new LoadBalancerService(new TcpListenerWrapper(IPAddress.Loopback, listeningPort), backendRepository, socketHandler, checkAvailability);
+var loadBalancerService = new LoadBalancer(new TcpListenerWrapper(IPAddress.Loopback, listeningPort), backendRepository, socketHandler, checkAvailability);
 
 logger.Information("Load balancer service started on port {ListeningPort}", listeningPort);
 await loadBalancerService.StartAsync(cts.Token);
