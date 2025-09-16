@@ -11,5 +11,5 @@ public interface ITcpClientWrapper : IDisposable
     
     void Close();
     
-    NetworkStream GetStream();
+    Stream GetStream();
 }

@@ -27,7 +27,7 @@ public class LoadBalancerService : ILoadBalancerService
         _listener = listener;
     }
 
-    public async Task StartAsync(Func<ITcpClientWrapper> tcpClientFactory, CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         await _checkBackendAvailability.StartCheckAsync(cancellationToken);
             
@@ -51,7 +51,7 @@ public class LoadBalancerService : ILoadBalancerService
             }
             
             _logger.Debug("Selected backend is {IpAddress} {Port}", backend.IpAddress, backend.Port);
-            _ = Task.Run(() => _handler.HandleConnection(client, tcpClientFactory, backend, cancellationToken), cancellationToken);
+            _ = Task.Run(() => _handler.HandleConnection(client, backend, cancellationToken), cancellationToken);
         }
         
         _logger.Debug("Load balancer finished");

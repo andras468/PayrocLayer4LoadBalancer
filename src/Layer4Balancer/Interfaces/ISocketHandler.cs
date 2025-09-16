@@ -5,5 +5,5 @@ namespace Layer4Balancer.Interfaces;
 
 public interface ISocketHandler
 {
-    Task HandleConnection(ITcpClientWrapper client, Func<ITcpClientWrapper> tcpClientFactory, Backend backend, CancellationToken cancellationToken);
+    Task HandleConnection(ITcpClientWrapper client, Backend backend, CancellationToken cancellationToken);
 }

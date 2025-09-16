@@ -34,7 +34,7 @@ public class TcpClientWrapper : ITcpClientWrapper
         _client.Close();
     }
 
-    public NetworkStream GetStream()
+    public Stream GetStream()
     {
         return _client.GetStream();
     }

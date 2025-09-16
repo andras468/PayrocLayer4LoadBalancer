@@ -21,14 +21,16 @@ Console.CancelKeyPress += (_, eventArgs) =>
     cts.Cancel();
 };
 
+var tcpClientWrapperFactory = () => new TcpClientWrapper();
+
 var backendRepository = new BackendRepository();
 backendRepository.Add(IPAddress.Loopback, 7001);
-// backendRepository.Add(IPAddress.Loopback, 7002);
+backendRepository.Add(IPAddress.Loopback, 7002);
 
-var socketHandler = new SocketHandler();
-var checkAvailability = new CheckBackendAvailability(backendRepository);
+var socketHandler = new SocketHandler(tcpClientWrapperFactory);
+var checkAvailability = new CheckBackendAvailability(tcpClientWrapperFactory, backendRepository);
 
 var loadBalancerService = new LoadBalancerService(new TcpListenerWrapper(IPAddress.Loopback, listeningPort), backendRepository, socketHandler, checkAvailability);
 
 logger.Information("Load balancer service started on port {ListeningPort}", listeningPort);
-await loadBalancerService.StartAsync(() => new TcpClientWrapper(), cts.Token);
+await loadBalancerService.StartAsync(cts.Token);

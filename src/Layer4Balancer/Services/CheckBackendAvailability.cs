@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using Layer4Balancer.Interfaces;
+using Layer4Balancer.Wrappers;
 using Serilog;
 
 namespace Layer4Balancer.Services;
@@ -10,9 +11,11 @@ public class CheckBackendAvailability : ICheckBackendAvailability
     private readonly ILogger _logger;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(5);
     private readonly TimeSpan _connectionTimeout = TimeSpan.FromSeconds(1);
-    
-    public CheckBackendAvailability(IBackendRepository backendRepository)
+    private readonly Func<ITcpClientWrapper> _tcpClientFactory;
+
+    public CheckBackendAvailability(Func<ITcpClientWrapper> tcpClientFactory, IBackendRepository backendRepository)
     {
+        _tcpClientFactory = tcpClientFactory;
         _backendRepository = backendRepository;
         _logger = Log.ForContext<CheckBackendAvailability>();
     }
@@ -33,7 +36,7 @@ public class CheckBackendAvailability : ICheckBackendAvailability
             {
                 try
                 {
-                    using var client = new TcpClient();
+                    using var client = _tcpClientFactory.Invoke();
                     var connectTask = client.ConnectAsync(backend.IpAddress, backend.Port, cancellationToken).AsTask();
                     var timeoutTask = Task.Delay(_connectionTimeout, cancellationToken);
                     

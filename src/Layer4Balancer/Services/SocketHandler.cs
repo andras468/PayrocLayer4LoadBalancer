@@ -6,27 +6,30 @@ namespace Layer4Balancer.Services;
 
 public class SocketHandler : ISocketHandler
 {
+    private readonly Func<ITcpClientWrapper> _backendTcpClientWrapperFactory;
     private readonly ILogger _logger;
 
-    public SocketHandler()
+    public SocketHandler(Func<ITcpClientWrapper> tcpClientWrapperFactory)
     {
+        _backendTcpClientWrapperFactory = tcpClientWrapperFactory;
         _logger = Log.ForContext<LoadBalancerService>();
     }
 
-    public async  Task HandleConnection(ITcpClientWrapper client, Func<ITcpClientWrapper> tcpClientFactory, Backend backend, CancellationToken cancellationToken)
+    public async Task HandleConnection(ITcpClientWrapper client, Backend backend, CancellationToken cancellationToken)
     {
-        _logger.Information("Handling new connection from {RemoteIpAddressAndPort}", client.Client.RemoteEndPoint?.ToString());
-        using var serverSocket = tcpClientFactory.Invoke();
+        _logger.Information("Handling new connection from {RemoteIpAddressAndPort}", client.Client?.RemoteEndPoint?.ToString());
+        using var backendSocket = _backendTcpClientWrapperFactory.Invoke();
 
         try
         {
             _logger.Debug("Connecting to backend endpoint {BackendIpAddress}:{BackendPort}", backend.IpAddress, backend.Port);
-            await serverSocket.ConnectAsync(backend.IpAddress, backend.Port, cancellationToken);
+            await backendSocket.ConnectAsync(backend.IpAddress, backend.Port, cancellationToken);
         }
         catch (Exception e)
         {
             _logger.Error(e, "Exception while opening connection to backend, closing client connection");
             client.Close();
+            return;
         }
 
         backend.IncrementActiveConnectionCount();
@@ -35,7 +38,7 @@ public class SocketHandler : ISocketHandler
         try
         {
             var clientStream = client.GetStream();
-            var backendStream = serverSocket.GetStream();
+            var backendStream = backendSocket.GetStream();
 
             var clientCopyTask = clientStream.CopyToAsync(backendStream, cancellationToken);
             var backendCopyTask = backendStream.CopyToAsync(clientStream, cancellationToken);
@@ -52,7 +55,7 @@ public class SocketHandler : ISocketHandler
         finally
         {
             client.Close();
-            serverSocket.Close();
+            backendSocket.Close();
             backend.DecrementActiveConnectionCount();
         }
     }
