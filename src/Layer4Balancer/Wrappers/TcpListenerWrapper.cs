@@ -12,9 +12,9 @@ public class TcpListenerWrapper : ITcpListenerWrapper
         _listener = new TcpListener(listeningAddress, listeningPort);
     }
     
-    public ITcpClientWrapper AcceptTcpClient()
+    public async Task<ITcpClientWrapper> AcceptTcpClientAsync(CancellationToken cancellationToken)
     {
-        return new TcpClientWrapper(_listener.AcceptTcpClient());
+        return new TcpClientWrapper(await _listener.AcceptTcpClientAsync(cancellationToken));
     }
 
     public void Start()

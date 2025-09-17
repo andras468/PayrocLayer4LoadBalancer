@@ -36,7 +36,7 @@ public class LoadBalancerTests
         var mre = new  ManualResetEventSlim(false);
         
         _tcpListenerMock
-            .AcceptTcpClient()
+            .AcceptTcpClientAsync(Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(_ =>
             {
                 mre.Set();
@@ -63,7 +63,7 @@ public class LoadBalancerTests
         var mre = new  ManualResetEventSlim(false);
         
         _tcpListenerMock
-            .AcceptTcpClient()
+            .AcceptTcpClientAsync(Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(_ =>
             {
                 mre.Set();
@@ -101,7 +101,7 @@ public class LoadBalancerTests
             });
 
         _tcpListenerMock
-            .AcceptTcpClient()
+            .AcceptTcpClientAsync(Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(_ => _tcpClientMock);
         
         // Act
@@ -143,7 +143,7 @@ public class LoadBalancerTests
             .Returns(backend);
         
         _tcpListenerMock
-            .AcceptTcpClient()
+            .AcceptTcpClientAsync(Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(_ => _tcpClientMock);
         
         // Act

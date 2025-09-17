@@ -39,4 +39,18 @@ var checkAvailability = new CheckBackendAvailability(tcpClientWrapperFactory, ba
 var loadBalancerService = new LoadBalancer(new TcpListenerWrapper(IPAddress.Any, Configuration.Instance.ListeningPort), backendRepository, socketHandler, checkAvailability);
 
 logger.Information("Load balancer service started on port {ListeningPort}", Configuration.Instance.ListeningPort);
-await loadBalancerService.StartAsync(cts.Token);
+
+try
+{
+    await loadBalancerService.StartAsync(cts.Token);
+}
+catch (Exception e) when (
+    e is TaskCanceledException ||
+    e is OperationCanceledException)
+{
+    logger.Information("Graceful shutdown. Exiting...");
+}
+catch (Exception e)
+{
+    logger.Error(e, "Unhandled exception raised. Exiting...");
+}

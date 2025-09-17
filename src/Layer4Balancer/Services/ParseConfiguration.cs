@@ -68,7 +68,7 @@ public class ParseConfiguration
 
     private BackendSettings[] ParseBackendList(string? backendList)
     {
-        var backendAddressStrings = backendList?.Trim().Split(";") ?? [];
+        var backendAddressStrings = backendList?.Trim().Split(",") ?? [];
         var backendAddressList = new List<BackendSettings>();
         
         foreach (var backendAddressString in backendAddressStrings)

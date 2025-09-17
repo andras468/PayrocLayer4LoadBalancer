@@ -50,8 +50,8 @@ public class ParseConfigurationTests
     [InlineData("")]
     [InlineData("     ")]
     [InlineData("invalidIpAddress")]
-    [InlineData("invalidIpAddress1;invalidIpAddress2")]
-    [InlineData("127.0.0.1:notAPort1;127.0.0.1:notAPort2")]
+    [InlineData("invalidIpAddress1,invalidIpAddress2")]
+    [InlineData("127.0.0.1:notAPort1,127.0.0.1:notAPort2")]
     public void Parse_BackendList_Invalid_SetsBackendListInConfigurationObjectEmpty(string? backendListString)
     {
         // Arrange
@@ -90,8 +90,8 @@ public class ParseConfigurationTests
     }
 
     [Theory]
-    [InlineData("127.0.0.1:-1;127.0.0.1:10000")]
-    [InlineData("invalidIpAddress:10000;127.0.0.1:10000")]
+    [InlineData("127.0.0.1:-1,127.0.0.1:10000")]
+    [InlineData("invalidIpAddress:10000,127.0.0.1:10000")]
     public void Parse_OneBackendConfigOutOfTwoIsValid_OnlyOneAddedToTheConfiguration(string? backendListString)
     {
         // Arrange
@@ -118,7 +118,7 @@ public class ParseConfigurationTests
         
         _environmentWrapperMock
             .GetEnvironmentVariable(Arg.Is<string>(s => s == EnvBackendList))
-            .Returns("127.0.0.1:7510;8.8.8.8:10000");
+            .Returns("127.0.0.1:7510,8.8.8.8:10000");
         
         // Act
         _sut.Parse(_configuration);

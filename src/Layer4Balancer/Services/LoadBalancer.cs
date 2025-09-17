@@ -38,8 +38,16 @@ public class LoadBalancer : ILoadBalancerService
         while (!cancellationToken.IsCancellationRequested)
         {
             _logger.Debug("Waiting for new connection");
-            var client = _listener.AcceptTcpClient();
+            var clientTask = _listener.AcceptTcpClientAsync(cancellationToken);
+            
+            var client = await clientTask;
 
+            if (!clientTask.IsCompletedSuccessfully)
+            {
+                _logger.Information("Listener returned with an error");
+                continue;
+            }
+            
             var backend = _backendRepository.GetNextAvailable();
 
             if (backend is null)

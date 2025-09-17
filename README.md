@@ -56,7 +56,6 @@ ncat {ipaddress} {listening port}
 
 # Known bugs and limitations
 
-* Graceful shutdown problem: SIGTERM is processed only if a new connection has been made, so it could be necessary to kill the process with SIGKILL.
 * No limits on connections to backends.
 * Only has one load balancing strategy.
 * Only TCP protocol supported.

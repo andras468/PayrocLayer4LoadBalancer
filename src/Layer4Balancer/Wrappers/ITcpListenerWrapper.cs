@@ -2,7 +2,7 @@ namespace Layer4Balancer.Wrappers;
 
 public interface ITcpListenerWrapper
 {
-    ITcpClientWrapper AcceptTcpClient();
+    Task<ITcpClientWrapper> AcceptTcpClientAsync(CancellationToken cancellationToken = default);
 
     void Start();
 }
