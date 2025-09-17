@@ -1,3 +1,4 @@
+using Layer4Balancer.Config;
 using Layer4Balancer.Interfaces;
 using Layer4Balancer.Wrappers;
 using Serilog;
@@ -8,8 +9,8 @@ public class CheckBackendAvailability : ICheckBackendAvailability
 {
     private readonly IBackendRepository _backendRepository;
     private readonly ILogger _logger;
-    private readonly TimeSpan _delay = TimeSpan.FromSeconds(5);
-    private readonly TimeSpan _connectionTimeout = TimeSpan.FromSeconds(1);
+    private readonly TimeSpan _delay = Configuration.Instance.AvailabilityCheckInterval;
+    private readonly TimeSpan _connectionTimeout = Configuration.Instance.AvailabilityCheckConnectionTimeout;
     private readonly Func<ITcpClientWrapper> _tcpClientFactory;
 
     public CheckBackendAvailability(Func<ITcpClientWrapper> tcpClientFactory, IBackendRepository backendRepository)

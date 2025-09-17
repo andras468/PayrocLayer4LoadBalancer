@@ -1,9 +1,8 @@
 ﻿using System.Net;
+using Layer4Balancer.Config;
 using Serilog;
 using Layer4Balancer.Services;
 using Layer4Balancer.Wrappers;
-
-const int listeningPort = 7000;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -12,7 +11,7 @@ Log.Logger = new LoggerConfiguration()
 
 var logger = Log.ForContext<Program>();
 
-var cts = new CancellationTokenSource();
+using var cts = new CancellationTokenSource();
 
 Console.CancelKeyPress += (_, eventArgs) =>
 {
@@ -21,16 +20,23 @@ Console.CancelKeyPress += (_, eventArgs) =>
     cts.Cancel();
 };
 
-var tcpClientWrapperFactory = () => new TcpClientWrapper();
+new ParseConfiguration().Parse(Configuration.Instance);
+
+if (Configuration.Instance.Backends.Length == 0)
+{
+    logger.Error("No backends configured. Exiting...");
+    Environment.Exit(-1);
+}
 
 var backendRepository = new BackendRepository();
-backendRepository.Add(IPAddress.Loopback, 7001);
-backendRepository.Add(IPAddress.Loopback, 7002);
+backendRepository.AddRange(Configuration.Instance.Backends);
+
+var tcpClientWrapperFactory = () => new TcpClientWrapper();
 
 var socketHandler = new SocketHandler(tcpClientWrapperFactory);
 var checkAvailability = new CheckBackendAvailability(tcpClientWrapperFactory, backendRepository);
 
-var loadBalancerService = new LoadBalancer(new TcpListenerWrapper(IPAddress.Loopback, listeningPort), backendRepository, socketHandler, checkAvailability);
+var loadBalancerService = new LoadBalancer(new TcpListenerWrapper(IPAddress.Any, Configuration.Instance.ListeningPort), backendRepository, socketHandler, checkAvailability);
 
-logger.Information("Load balancer service started on port {ListeningPort}", listeningPort);
+logger.Information("Load balancer service started on port {ListeningPort}", Configuration.Instance.ListeningPort);
 await loadBalancerService.StartAsync(cts.Token);

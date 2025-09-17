@@ -1,4 +1,5 @@
 using System.Net;
+using Layer4Balancer.Config;
 using Layer4Balancer.Interfaces;
 
 namespace Layer4Balancer.Services;
@@ -21,6 +22,16 @@ public class BackendRepository : IBackendRepository
         Add(IPAddress.Parse(ipAddress), port);
     }
 
+    public void AddRange(IEnumerable<BackendSettings> backendSettings)
+    {
+        lock (_lock)
+        {
+            _backends.AddRange(
+                backendSettings
+                    .Select(x => new Backend { IpAddress = x.Address, Port = x.Port }));
+        }
+    }
+    
     public Backend? GetNextAvailable()
     {
         lock (_lock)

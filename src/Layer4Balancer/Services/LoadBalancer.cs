@@ -50,7 +50,7 @@ public class LoadBalancer : ILoadBalancerService
                 continue;
             }
             
-            _logger.Debug("Selected backend is {IpAddress} {Port}", backend.IpAddress, backend.Port);
+            _logger.Debug("Selected backend is {IpAddress}:{Port}", backend.IpAddress, backend.Port);
             _ = Task.Run(() => _handler.HandleConnection(client, backend, cancellationToken), cancellationToken);
         }
         
