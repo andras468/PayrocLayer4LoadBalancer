@@ -20,7 +20,7 @@ Console.CancelKeyPress += (_, eventArgs) =>
     cts.Cancel();
 };
 
-new ParseConfiguration().Parse(Configuration.Instance);
+new ParseConfiguration(new EnvironmentWrapper()).Parse(Configuration.Instance);
 
 if (Configuration.Instance.Backends.Length == 0)
 {

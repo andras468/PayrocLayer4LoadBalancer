@@ -28,7 +28,7 @@ It can be configurable through environment variables.
 
 | Variable                                    | Description                                                                                                         | Default value |
 |:--------------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:--------------|
-| LB_BACKEND_LIST                             | List of the backend servers in the format: `hostname/ipaddress:port;hostname/ipaddress:port;...`                    | None          |
+| LB_BACKEND_LIST                             | List of the backend servers in the format: `ipaddress:port;ipaddress:port;...`                                      | None          |
 | LB_LISTENING_PORT                           | The port where the load balancer listening on all available interfaces.                                             | 7000          |
 | LB_AVAILABILITY_CHECK_INTERVAL_MS           | The delay between availability checks (milliseconds).                                                               | 5000          |
 | LB_AVAILABILITY_CHECK_CONNECTION_TIMEOUT_MS | The timeout when the availability checking process trying to connect to a backend endpoint to determine the health. | 1000          |
@@ -51,7 +51,7 @@ ncat -lk {port}
 ## Client(s)
 
 ```bash
-ncat {host} {listening port}
+ncat {ipaddress} {listening port}
 ```
 
 # Known bugs and limitations
