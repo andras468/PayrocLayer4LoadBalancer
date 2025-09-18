@@ -10,7 +10,7 @@ public class LoadBalancerTests
 {
     private readonly ITcpListenerWrapper _tcpListenerMock = Substitute.For<ITcpListenerWrapper>();
     private readonly ITcpClientWrapper _tcpClientMock = Substitute.For<ITcpClientWrapper>();
-    private readonly IBackendRepository _backendRepositoryMock = Substitute.For<IBackendRepository>();
+    private readonly IBalancerStrategy _balancerStrategyMock = Substitute.For<IBalancerStrategy>();
     private readonly ISocketHandler _socketHandlerMock = Substitute.For<ISocketHandler>();
     private readonly ICheckBackendAvailability _checkBackendAvailabilityMock = Substitute.For<ICheckBackendAvailability>();
     
@@ -21,7 +21,7 @@ public class LoadBalancerTests
         
         _sut = new LoadBalancer(
             _tcpListenerMock,
-            _backendRepositoryMock,
+            _balancerStrategyMock,
             _socketHandlerMock,
             _checkBackendAvailabilityMock);
     }
@@ -138,7 +138,7 @@ public class LoadBalancerTests
                 cts.Cancel();
             });
                 
-        _backendRepositoryMock
+        _balancerStrategyMock
             .GetNextAvailable()
             .Returns(backend);
         

@@ -31,24 +31,6 @@ public class BackendRepository : IBackendRepository
                     .Select(x => new Backend { IpAddress = x.Address, Port = x.Port }));
         }
     }
-    
-    public Backend? GetNextAvailable()
-    {
-        lock (_lock)
-        {
-            var backendsWithMinimumConnections = _backends
-                .Where(backend => backend.Available)
-                .ToArray();
-
-            if (backendsWithMinimumConnections.Length == 0)
-            {
-                return null;
-            }
-
-            var minimumConnections = backendsWithMinimumConnections.Min(backend => backend.ActiveConnectionCount);
-            return backendsWithMinimumConnections.FirstOrDefault(backend => backend.ActiveConnectionCount == minimumConnections);
-        }
-    }
 
     public IEnumerable<Backend> GetAll()
     {

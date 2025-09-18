@@ -7,20 +7,20 @@ namespace Layer4Balancer.Services;
 public class LoadBalancer : ILoadBalancerService
 {
     private readonly ITcpListenerWrapper _listener;
-    private readonly IBackendRepository _backendRepository;
+    private readonly IBalancerStrategy _balancerStrategy;
     private readonly ISocketHandler _handler;
     private readonly ICheckBackendAvailability _checkBackendAvailability;
     private readonly ILogger _logger;
     
     public LoadBalancer(
         ITcpListenerWrapper listener,
-        IBackendRepository backendRepository,
+        IBalancerStrategy balancerStrategy,
         ISocketHandler handler,
         ICheckBackendAvailability checkBackendAvailability)
     {
         _logger = Log.ForContext<LoadBalancer>();
         
-        _backendRepository = backendRepository;
+        _balancerStrategy = balancerStrategy;
         _handler = handler;
         _checkBackendAvailability = checkBackendAvailability;
 
@@ -48,7 +48,7 @@ public class LoadBalancer : ILoadBalancerService
                 continue;
             }
             
-            var backend = _backendRepository.GetNextAvailable();
+            var backend = _balancerStrategy.GetNextAvailable();
 
             if (backend is null)
             {

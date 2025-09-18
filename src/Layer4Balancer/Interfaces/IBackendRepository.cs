@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Net;
 using Layer4Balancer.Services;
 
@@ -9,8 +8,6 @@ public interface IBackendRepository
     void Add(IPAddress ipAddress, int port);
     
     void Add(string ipAddress, int port);
-    
-    Backend? GetNextAvailable();
     
     IEnumerable<Backend> GetAll();
 }

@@ -33,10 +33,11 @@ backendRepository.AddRange(Configuration.Instance.Backends);
 
 var tcpClientWrapperFactory = () => new TcpClientWrapper();
 
+var balancerStrategy = new BalancerStrategyLeastConnection(backendRepository);
 var socketHandler = new SocketHandler(tcpClientWrapperFactory);
 var checkAvailability = new CheckBackendAvailability(tcpClientWrapperFactory, backendRepository);
 
-var loadBalancerService = new LoadBalancer(new TcpListenerWrapper(IPAddress.Any, Configuration.Instance.ListeningPort), backendRepository, socketHandler, checkAvailability);
+var loadBalancerService = new LoadBalancer(new TcpListenerWrapper(IPAddress.Any, Configuration.Instance.ListeningPort), balancerStrategy, socketHandler, checkAvailability);
 
 logger.Information("Load balancer service started on port {ListeningPort}", Configuration.Instance.ListeningPort);
 
