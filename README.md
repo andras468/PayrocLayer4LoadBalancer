@@ -59,6 +59,7 @@ ncat {ipaddress} {listening port}
 * No limits on connections to backends.
 * Only has one load balancing strategy.
 * Only TCP protocol supported.
+* No real-time redirection when backend fails, client needs to reconnect
 
 # Testing
 
